@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:instagram_flutter/screens/profile_screen.dart';
 import 'package:instagram_flutter/utils/colors.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:instagram_flutter/utils/global_variable.dart';
 
 class SearchScreen extends StatefulWidget {
   const SearchScreen({Key? key}) : super(key: key);
@@ -14,6 +15,7 @@ class SearchScreen extends StatefulWidget {
 class _SearchScreenState extends State<SearchScreen> {
   final TextEditingController searchController = TextEditingController();
   bool isShowUsers = false;
+
   // bool isLoading = false;
 
   @override
@@ -24,6 +26,7 @@ class _SearchScreenState extends State<SearchScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: kMobileBackgroundColor,
@@ -61,8 +64,7 @@ class _SearchScreenState extends State<SearchScreen> {
                       onTap: () => Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (context) => ProfileScreen(
-                            uid: (snapshot.data! as dynamic).docs[index]
-                                ['uid'],
+                            uid: (snapshot.data! as dynamic).docs[index]['uid'],
                           ),
                         ),
                       ),
@@ -99,10 +101,15 @@ class _SearchScreenState extends State<SearchScreen> {
                   itemCount: (snapshot.data! as dynamic).docs.length,
                   itemBuilder: (context, index) => Image.network(
                       (snapshot.data! as dynamic).docs[index]['postUrl']),
-                  staggeredTileBuilder: (index) => StaggeredTile.count(
-                    (index % 7 == 0) ? 2 : 1,
-                    (index % 7 == 0) ? 2 : 1,
-                  ),
+                  staggeredTileBuilder: (index) => width > webScreenSize
+                      ? StaggeredTile.count(
+                          (index % 7 == 0) ? 1 : 1,
+                          (index % 7 == 0) ? 1 : 1,
+                        )
+                      : StaggeredTile.count(
+                          (index % 7 == 0) ? 2 : 1,
+                          (index % 7 == 0) ? 2 : 1,
+                        ),
                 );
               },
             ),
